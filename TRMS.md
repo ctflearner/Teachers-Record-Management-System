@@ -81,3 +81,6 @@ This could allow an attacker to write custom pages ,Those pages can contain phis
 or even JS code that will be executed in the context of the active user browser, and also this
 could allow an attacker to overwrite critical files simply by uploading a file with the same name
 
+<h3>REFERENCE</h3>
+[CWE-434: Unrestricted Upload of File with Dangerous Type](https://cwe.mitre.org/data/definitions/434.html)
+
