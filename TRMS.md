@@ -6,6 +6,8 @@ Software Link: https://phpgurukul.com/teachers-record-management-system-using-ph
 Version: 1.0
 Tested on: Windows 11 + XAMPP 
 ```
+<h1>TITLE</h1>
+Teachers Record Management System 1.0 – File Upload Type Validation Error in /changeimage
 
 <h2>DESCRIPTION</h2>
 The upload functionality of updating user profile does not properly validate the file content-type, 
@@ -76,5 +78,6 @@ Content-Disposition: form-data; name="submit"
 
 <h2>IMPACT</h2>
 This could allow an attacker to write custom pages ,Those pages can contain phishing html 
-or even JS code that will be executed in the context of the active user browser.
+or even JS code that will be executed in the context of the active user browser, and also this
+could allow an attacker to overwrite critical files simply by uploading a file with the same name
 
